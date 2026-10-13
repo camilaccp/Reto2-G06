@@ -60,7 +60,7 @@ def sort_crit_load(a, b):
 
     if a["Amount"] != b["Amount"]:
         return a["Amount"] > b["Amount"]
-    return a["Order_Id"] != b["Order_Id"]
+    return a["Order_ID"] != b["Order_ID"]
 
 # Funciones para la carga de datos
 

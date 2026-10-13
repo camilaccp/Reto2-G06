@@ -1,6 +1,19 @@
 import sys
+import os
+from App import logic
+from DataStructures.List import array_list as al
+from DataStructures.Map import map_linear_probing as lp
 
+default_limit = 1000
+sys.setrecursionlimit(default_limit*10)
 
+data_dir = os.path.dirname(os.path.realpath(__file__)) + "/../Data/"
+
+def print_order(order):
+    print(f" {order["Order_ID"]} | {order["Product"]} | {order["Country"]} | {order["Channel"]} |"
+          f" {order["Order_Date"]} | Cajas: {order["Boxes_Shipped"]} | "
+          f"Precio/Caja: {order["Price_per_Box"]} | Amount: {order["Amount"]} ")
+    
 def new_logic():
     """
         Se crea una instancia del controlador
@@ -24,7 +37,47 @@ def load_data(control):
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    pass
+    
+    print("Archivos: 1) 100 elementos 2) 20% 3) 40% 4) 60% 5) 80% 6) 100%")
+    option = input("Escoja el archivo: ")
+    nombres = {"1": "100_elementos",
+               "2": "20_pct",
+               "3": "40_pct",
+               "4": "60_pct",
+               "5": "80_pct",
+               "6": "100_pct",
+               }
+    
+    filename = data_dir + "chocolate_sale_" + nombres[option] + ".csv"
+    
+    algo = logic.load_data(control, filename)
+    orders = control["orders"]
+    total = algo["total"]
+    
+    print(f"\nTiempo de Carga: {algo['time']:.2f} ms")
+    print(f"Total de Pedidos: {total}")
+    
+    print("Pedidos por canal:")
+    canales = lp.key_set(control["orders_by_channel"])
+    for i in range(al.size(canales)):
+        canal = al.get_element(canales, i)
+        print(f" {canal}: {lp.get(control['orders_by_channel'], canal)}")
+        
+    print(f"Fecha más antigua: {algo['oldest']}")
+    print(f"Fecha más reciente: {algo['newest']}")
+    
+    print("\nPedido con Amount mayor:")
+    print_order(al.get_element(orders, 0))
+    print("Pedido con Amonut menor:")
+    print_order(al.get_element(orders, total -1))
+    
+    print("\nPrimeros 5 pedidos (de mayor a menor Amount):")
+    for i in range(min(5, total)):
+        print_order(al.get_element(orders, i))
+    print("Ultimos 5 pedidos:")
+    for i in range(max(0, total-5), total):
+        print_order(al.get_element(orders, i))
+    
 
 
 def print_data(control, id):
