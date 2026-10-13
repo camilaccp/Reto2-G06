@@ -13,13 +13,31 @@ def print_order(order):
     print(f" {order["Order_ID"]} | {order["Product"]} | {order["Country"]} | {order["Channel"]} |"
           f" {order["Order_Date"]} | Cajas: {order["Boxes_Shipped"]} | "
           f"Precio/Caja: {order["Price_per_Box"]} | Amount: {order["Amount"]} ")
+
+
+def print_first_last(lista, print_func, limite=20, mostrar=10):
     
+    """ Si la lista tiene mas de limite elementos, imprime los primeros y ultimos mostrar elementos, si no imprime todos """
+    
+    total = al.size(lista)
+    if total <= limite:
+        for i in range(total):
+            print_func(al.get_element(lista, i))
+    else:
+        print(f"Primeros {mostrar} elementos:")
+        for i in range(mostrar):
+            print_func(al.get_element(lista, i))
+        print(f"\nUltimos {mostrar} elementos:")
+        for i in range(total - mostrar, total):
+            print_func(al.get_element(lista, i))
+
 def new_logic():
     """
         Se crea una instancia del controlador
     """
     #TODO: Llamar la función de la lógica donde se crean las estructuras de datos
-    pass
+    
+    return logic.new_logic()
 
 def print_menu():
     print("Bienvenido")
@@ -94,13 +112,35 @@ def print_req_1(control):
     # TODO: Imprimir el resultado del requerimiento 1
     pass
 
-
+def print_order_req2(order):
+    
+    print(f" {order['Order_ID']} | {order['Product']} | {order['Channel']} | {order['Order_Date']} |"
+            f" Cajas: {order['Boxes_Shipped']} | Precio/Caja: {order['Price_per_Box']} |"
+            f" Marketing: {order['Marketing_Spend']} | Amount: {order['Amount']} ")
+    
+    
 def print_req_2(control):
     """
         Función que imprime la solución del Requerimiento 2 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 2
-    pass
+    
+    country = input("Ingrese el país: ").strip()
+    min_boxes = int(input("Ingrese el número mínimo de cajas: "))
+    max_boxes = int(input("Ingrese el número máximo de cajas: "))
+    
+    respuesta = logic.req_2(control, country, min_boxes, max_boxes)
+    
+    print(f"\nTiempo de ejecución: {respuesta['time']:.2f} ms")
+    print(f"Total de pedidos que cumplieron con el filtro: {respuesta['total']}")
+    print(f"Número de productos distintos: {respuesta['distinct_products']}")
+    print(f"Promedio de Marketing Spend: {respuesta['avg_marketing']:.2f}")
+    print(f"Promedio de Amount: {respuesta['avg_amount']:.2f}")
+    if respuesta['top_product'] is not None:
+        print(f"Producto con más pedidos: {respuesta['top_product']['product']} ({respuesta['top_product']['count']} pedidos)")
+    else:
+        print("\nPedidos (Boxes_Shipped ascendente):")
+        print_first_last(respuesta['orders'], print_order_req2, limite=20, mostrar=10)
 
 
 def print_req_3(control):
